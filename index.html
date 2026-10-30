@@ -1,0 +1,1149 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Fix It First</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --paper:#f3f6f4;
+    --paper-raised:#ffffff;
+    --ink:#172420;
+    --ink-dim:#526059;
+    --line:#d7e0da;
+    --line-strong:#b9c6bd;
+    --accent:#24505a;
+    --accent-strong:#173840;
+    --accent-ink:#f2f7f6;
+    --good:#256b46;
+    --good-bg:#e2f2e8;
+    --good-line:#bcded0;
+    --warn:#8a5a1f;
+    --warn-bg:#faecd9;
+    --warn-line:#e9cfa0;
+    --escalate:#5b4593;
+    --escalate-bg:#ece7f7;
+    --escalate-line:#d2c5ec;
+    --mono-bg:#e9edea;
+    --shadow:rgba(23,36,32,0.10);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#101513;
+      --paper-raised:#18211d;
+      --ink:#e7ede9;
+      --ink-dim:#9db0a5;
+      --line:#2a3733;
+      --line-strong:#3c4a44;
+      --accent:#7fbcc2;
+      --accent-strong:#a6d3d7;
+      --accent-ink:#0d1a1c;
+      --good:#7fd6a3;
+      --good-bg:#173226;
+      --good-line:#2b5642;
+      --warn:#e8b673;
+      --warn-bg:#3a2c15;
+      --warn-line:#5c4520;
+      --escalate:#c3b2ee;
+      --escalate-bg:#251e3c;
+      --escalate-line:#3d3260;
+      --mono-bg:#1c2521;
+      --shadow:rgba(0,0,0,0.35);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#101513;
+    --paper-raised:#18211d;
+    --ink:#e7ede9;
+    --ink-dim:#9db0a5;
+    --line:#2a3733;
+    --line-strong:#3c4a44;
+    --accent:#7fbcc2;
+    --accent-strong:#a6d3d7;
+    --accent-ink:#0d1a1c;
+    --good:#7fd6a3;
+    --good-bg:#173226;
+    --good-line:#2b5642;
+    --warn:#e8b673;
+    --warn-bg:#3a2c15;
+    --warn-line:#5c4520;
+    --escalate:#c3b2ee;
+    --escalate-bg:#251e3c;
+    --escalate-line:#3d3260;
+    --mono-bg:#1c2521;
+    --shadow:rgba(0,0,0,0.35);
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', system-ui, -apple-system, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3,.display{
+    font-family:'Archivo', system-ui, sans-serif;
+    text-wrap:balance;
+    letter-spacing:-0.01em;
+  }
+
+  .mono, .stat-value, .pill, code, .id-field input{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:36px 20px 80px;
+  }
+
+  /* ---------- Header ---------- */
+  .masthead{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    padding-bottom:26px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:28px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px;height:7px;border-radius:50%;
+    background:var(--accent);
+    display:inline-block;
+  }
+  h1{
+    font-size:clamp(28px,4vw,38px);
+    font-weight:800;
+    margin:0;
+    color:var(--ink);
+  }
+  .lede{
+    font-size:16px;
+    color:var(--ink-dim);
+    max-width:60ch;
+    margin:0;
+  }
+  .stat-strip{
+    display:flex;
+    gap:0;
+    margin-top:6px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--paper-raised);
+  }
+  .stat{
+    flex:1;
+    padding:14px 18px;
+    border-right:1px solid var(--line);
+  }
+  .stat:last-child{border-right:none;}
+  .stat-value{
+    font-size:22px;
+    font-weight:600;
+    color:var(--accent);
+    display:block;
+  }
+  .stat-label{
+    font-size:12px;
+    color:var(--ink-dim);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+
+  /* ---------- Category grid ---------- */
+  .grid-heading{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .grid-heading h2{
+    font-size:15px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ink-dim);
+    font-weight:600;
+    margin:0;
+  }
+  .cat-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+  }
+  @media (max-width:640px){ .cat-grid{grid-template-columns:1fr;} }
+
+  .cat-card{
+    text-align:left;
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 18px 16px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    transition:border-color 0.15s ease, transform 0.15s ease, box-shadow .15s ease;
+    font:inherit;
+    color:inherit;
+  }
+  .cat-card:hover{
+    border-color:var(--line-strong);
+    box-shadow:0 6px 16px var(--shadow);
+    transform:translateY(-1px);
+  }
+  .cat-card:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+  }
+  .cat-card.fasttrack{
+    border-style:dashed;
+    border-color:var(--warn-line);
+    background:var(--warn-bg);
+  }
+  .cat-name{
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size:16.5px;
+  }
+  .cat-desc{
+    font-size:13.5px;
+    color:var(--ink-dim);
+    line-height:1.45;
+  }
+  .cat-meta{
+    margin-top:4px;
+    font-size:11.5px;
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--accent);
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+  .cat-card.fasttrack .cat-meta{ color:var(--warn); }
+
+  /* ---------- Flow panel ---------- */
+  .panel{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:28px;
+  }
+  .panel-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .back-btn{
+    background:none;
+    border:1px solid var(--line);
+    color:var(--ink-dim);
+    font:inherit;
+    font-size:13px;
+    padding:7px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .back-btn:hover{ border-color:var(--line-strong); color:var(--ink); }
+  .back-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .progress{
+    display:flex;
+    gap:6px;
+    align-items:center;
+  }
+  .progress .dot{
+    width:26px;height:4px;border-radius:2px;
+    background:var(--line);
+  }
+  .progress .dot.done{ background:var(--good); }
+  .progress .dot.active{ background:var(--accent); }
+  .step-count{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-dim);
+    margin-left:8px;
+    white-space:nowrap;
+  }
+
+  .cat-title{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--accent);
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  .question{
+    font-size:20px;
+    font-weight:600;
+    font-family:'Archivo', sans-serif;
+    margin:0 0 22px;
+    max-width:56ch;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .opt-btn{
+    text-align:left;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    font:inherit;
+    font-size:14.5px;
+    color:var(--ink);
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .opt-btn:hover{ border-color:var(--accent); background:var(--paper-raised); }
+  .opt-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .opt-arrow{ color:var(--ink-dim); flex-shrink:0; }
+
+  /* ---------- Search helper (quick bank lookup) ---------- */
+  .search-helper-hint{
+    color:var(--ink-dim);
+    font-size:13.5px;
+    margin:-10px 0 14px;
+  }
+  .search-helper{
+    display:flex;
+    gap:8px;
+    margin:0 0 22px;
+    flex-wrap:wrap;
+  }
+  .search-helper input{
+    flex:1;
+    min-width:160px;
+    font:inherit;
+    font-size:14.5px;
+    padding:11px 13px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .search-helper input:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+
+  /* ---------- Outcome cards ---------- */
+  .outcome{
+    border-radius:12px;
+    padding:22px 24px;
+    border:1px solid;
+  }
+  .outcome.good{ background:var(--good-bg); border-color:var(--good-line); }
+  .outcome.warn{ background:var(--warn-bg); border-color:var(--warn-line); }
+  .outcome.escalate{ background:var(--escalate-bg); border-color:var(--escalate-line); }
+
+  .outcome-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:10px;
+  }
+  .outcome.good .outcome-label{ color:var(--good); }
+  .outcome.warn .outcome-label{ color:var(--warn); }
+  .outcome.escalate .outcome-label{ color:var(--escalate); }
+
+  .outcome h3{
+    font-size:18px;
+    margin:0 0 10px;
+  }
+  .outcome p{ margin:0 0 10px; font-size:14.5px; color:var(--ink); }
+  .outcome p:last-child{ margin-bottom:0; }
+  .outcome .quote{
+    border-left:3px solid var(--line-strong);
+    padding-left:12px;
+    font-style:italic;
+    color:var(--ink-dim);
+    margin:10px 0;
+  }
+  .outcome ol, .outcome ul{ margin:8px 0; padding-left:22px; }
+  .outcome li{ margin-bottom:4px; font-size:14.5px; }
+  .flag{
+    margin-top:12px;
+    font-size:12.5px;
+    color:var(--ink-dim);
+    background:var(--mono-bg);
+    border-radius:8px;
+    padding:8px 12px;
+    font-family:'IBM Plex Mono', monospace;
+  }
+
+  .outcome-actions{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    font:inherit;
+    font-size:13.5px;
+    font-weight:600;
+    padding:10px 16px;
+    border-radius:9px;
+    cursor:pointer;
+    border:1px solid transparent;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .btn-primary{ background:var(--accent); color:var(--accent-ink); }
+  .btn-primary:hover{ background:var(--accent-strong); }
+  .btn-ghost{ background:transparent; border-color:var(--line-strong); color:var(--ink); }
+  .btn-ghost:hover{ background:var(--paper); }
+
+  /* ---------- Ticket screen ---------- */
+  .ticket-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .ticket-stub{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-dim);
+    background:var(--mono-bg);
+    padding:3px 9px;
+    border-radius:6px;
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-bottom:16px;
+  }
+  .field label{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--ink-dim);
+    font-weight:600;
+  }
+  .field input, .field textarea{
+    font:inherit;
+    font-size:14.5px;
+    padding:11px 13px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:var(--paper);
+    color:var(--ink);
+    resize:vertical;
+  }
+  .field textarea{ font-family:'IBM Plex Mono', monospace; font-size:13px; line-height:1.6; min-height:150px; }
+  .field input:focus-visible, .field textarea:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:560px){ .field-row{ grid-template-columns:1fr; } }
+
+  .copy-toast{
+    font-size:12.5px;
+    color:var(--good);
+    font-weight:600;
+    opacity:0;
+    transition:opacity .2s ease;
+  }
+  .copy-toast.show{ opacity:1; }
+
+  .note-box{
+    background:var(--mono-bg);
+    border-radius:10px;
+    padding:14px 16px;
+    font-size:13px;
+    color:var(--ink-dim);
+    margin-top:20px;
+  }
+  .note-box strong{ color:var(--ink); }
+
+  footer{
+    margin-top:40px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    font-size:12px;
+    color:var(--ink-dim);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  footer a{ color:var(--accent); }
+
+  [hidden]{ display:none !important; }
+</style>
+
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="eyebrow">INHA &middot; In-House Accounting</div>
+    <h1>Fix It First</h1>
+    <p class="lede">Walk through the known causes before filing a Tight/Hurdlr tech ticket. Answer honestly &mdash; if nothing here fits, you'll land on a ticket, pre-filled with what you already checked.</p>
+    <div class="stat-strip">
+      <div class="stat"><span class="stat-value">31%</span><span class="stat-label">of tickets aren't tech issues</span></div>
+      <div class="stat"><span class="stat-value">8</span><span class="stat-label">issue types covered</span></div>
+      <div class="stat"><span class="stat-value">29</span><span class="stat-label">known patterns documented</span></div>
+    </div>
+  </div>
+
+  <div id="landing">
+    <div class="grid-heading"><h2>What's going on?</h2></div>
+    <div class="cat-grid" id="catGrid"></div>
+  </div>
+
+  <div id="flowArea" hidden></div>
+
+</div>
+
+<script>
+(function(){
+
+  var CATS = {
+    missing: {
+      name: "Missing Transactions",
+      desc: "Transactions expected in an account aren't showing up.",
+      steps: [
+        {
+          q: "Have you checked Archived Transactions for this account and period?",
+          opts: [
+            { label: "Found them there — they were archived", out: {
+                type:"good", title:"Not a tech issue — just archived",
+                body:["BKs sometimes archive transactions to clean up a view, then forget — they show up later as “missing.”","Restore the transaction(s) from Archive. No one else needs to be involved."]
+            }},
+            { label: "Checked — nothing archived", next:true }
+          ]
+        },
+        {
+          q: "Did you log in and jump straight to viewing a prior year (e.g. 2024) before the Home dashboard finished its initial load?",
+          opts: [
+            { label: "Yes — I didn't wait for it to finish", out: {
+                type:"good", title:"Not a tech issue — still loading in the background",
+                quote:"These expense transactions aren't surfacing because the Embedded SDK is still fetching transactions in the background. We pull in the last two years on initial login, so when the bookkeeper switches the year before that completes, those expenses aren't in the list yet. Expected behavior for high-volume accounts.",
+                source:"Tight support",
+                body:[],
+                list:["Log into the Pro's account from the Accountant Dashboard","Stay on the Home dashboard — don't navigate away or refresh","Wait until “Back To Dashboard” stops loading (~50s+, longer on high-volume accounts)","Then open Transactions and change the year"]
+            }},
+            { label: "I waited for the full load — still missing", next:true }
+          ]
+        },
+        {
+          q: "Check Banks & Integrations — does it show “Relink Needed” or disconnected?",
+          opts: [
+            { label: "Yes — disconnected / Relink Needed", out: {
+                type:"warn", title:"Refer to the Pro — not a tech issue",
+                body:["A disconnected account can't pull in new transactions. This is expected, not a bug.","You don't have the Pro's bank login — you can't reconnect this yourself. Ask your TL to have the Pro reconnect via Banks & Integrations.","Also worth trying first: the “Sync Latest” button on the Bank Integrations page — it resolves a lot of these on its own."]
+            }},
+            { label: "No — it's connected and syncing", next:true }
+          ]
+        },
+        {
+          q: "Was this year already closed (year-end close) for this Pro?",
+          opts: [
+            { label: "Yes — the year was closed", out: {
+                type:"warn", title:"Refer up — reopening is a governed process",
+                body:["Closed years are locked on purpose — transactions won't sync into them even if the bank connection is healthy.","Reopening isn't self-serve: submit a Re-Open Request to your TL (per the “Closing Prior Years” SOP). Only TLs/Managers have canReopenBooks by default.","Once approved and reopened, work gets done, then it's re-closed right away — this is not a tech ticket."]
+            }},
+            { label: "No — or not sure", next:true }
+          ]
+        },
+        {
+          q: "Is the missing period older than when the account was first linked?",
+          searchHelper: {
+            hint: "Before assuming a bug, check how far back this bank shares transaction history through Plaid — type the bank name and search.",
+            placeholder: "e.g. Truist",
+            queryTemplate: "Plaid transaction history limit"
+          },
+          opts: [
+            { label: "Search confirms a limit for this bank", out: {
+                type:"good", title:"Not a tech issue — bank-side data limit",
+                body:["Most banks publish or have documented how far back they'll share history through Plaid on initial link — a quick search on the bank's name usually surfaces it. Examples we've confirmed: Capital One ~90 days; Chase has a cutoff date on some accounts; First National Bank of East Texas is quarterly (only back to the first month of the current quarter, not a rolling window); Plaid's own general ceiling is up to ~730 days, but it's bank-dependent and often much shorter.","This can't be overridden by Tight support — it's the bank/Plaid restriction.","Use CSV Import to bring in the older transactions manually.","Found a new bank's limit that isn't listed here? Let your TL know so it can be added — this list is only ever a starting point, not the full set."]
+            }},
+            { label: "Searched, found nothing, or doesn't match this pattern", out:{type:"ticket"} }
+          ]
+        }
+      ]
+    },
+
+    stripe: {
+      name: "Missing Stripe Payouts",
+      desc: "A Stripe payout doesn't appear in the Plaid bank-feed transactions.",
+      steps: [
+        {
+          q: "Check the HCP Stripe Payments account for a date 1–2 business days before the bank-feed deposit date — do you find the payout there?",
+          opts: [
+            { label: "Yes, found it under an earlier date", out: {
+                type:"good", title:"Not a tech issue — just a date-labeling difference",
+                body:["Tight dates HCP Stripe Payments entries by the Stripe payout's creation date, not the date it actually lands in the bank feed via ACH — which typically takes about 2 business days.","Match the payout to the bank-feed entry by amount and payout ID rather than by date alone.","Heuristic for next time: shift your search window back 2 business days from the bank-feed date whenever reconciling these."]
+            }},
+            { label: "No, still not found under any nearby date", next:true }
+          ]
+        },
+        {
+          q: "Check the Merchant Payments Report for this payout — did it go out as an instant payout to a debit card, rather than a standard deposit to the Pro's linked bank account?",
+          opts: [
+            { label: "Yes — instant payout to a card", out: {
+                type:"good", title:"Not a tech issue — payout went to an unconnected destination",
+                body:["Instant payouts to a debit card are a separate path from standard ACH deposits to the linked bank account, and banking data is only pulled through Plaid.","If that specific card isn't connected via Plaid (check Banks & Integrations), the payout will never appear in the feed — the funds went out successfully, they're just not shared with us.","If the card was later swapped out on Stripe's side, the Merchant Payments Report may show “NO DESTINATION DATA” for it — that's a display limitation from the old card being removed, not a sign anything's wrong."]
+            }},
+            { label: "No — standard deposit to the linked bank account", next:true }
+          ]
+        },
+        {
+          q: "Check Admin Panel → Payments Plan → Manage Send Accounting Data — does a record exist for this payout period?",
+          opts: [
+            { label: "No record found — haven't tried resending it yet", out: {
+                type:"good", title:"Try this first — self-serve resync",
+                body:["Select the relevant report type, set the date range to cover this payout, and resend — this has brought in payouts that a daily sync batch missed, without needing a ticket at all.","If the payout still doesn't appear after resending, that's when to escalate — include the payout ID and date so it can be traced directly rather than starting from scratch."]
+            }},
+            { label: "A record exists, or I've already resent it and it's still missing", out:{type:"ticket"} }
+          ]
+        }
+      ]
+    },
+
+    connecting: {
+      name: "Connecting a Bank Account",
+      desc: "Can't link, relink, or authenticate a bank connection.",
+      steps: [
+        {
+          q: "Have you clicked “Sync Latest” on the Bank Integrations page yet?",
+          opts: [
+            { label: "Not yet", out: {
+                type:"good", title:"Try this first",
+                body:["“Sync Latest” refreshes the Plaid connection and resolves a large share of reported issues on its own — always worth trying before anything else."]
+            }},
+            { label: "Yes — already tried, no change", next:true }
+          ]
+        },
+        {
+          q: "Is this a money market account?",
+          opts: [
+            { label: "Yes, it's a money market account", out: {
+                type:"good", title:"Not a tech issue — unsupported account type",
+                body:["Tight doesn't support money market account connections at all — this is a platform limitation, not a bug or a one-off failure.","The standard workaround for this account type isn't confirmed yet — check with your TL before assuming it can just be manually tracked the same way as other accounts."],
+                flag:"Open item: confirm the standard workaround for money market accounts with your TL, then this should get added here."
+            }},
+            { label: "No, different account type", next:true }
+          ]
+        },
+        {
+          q: "Does the connection screen show “Connectivity Down” for this bank?",
+          opts: [
+            { label: "Yes — it says Connectivity Down", out: {
+                type:"good", title:"Not a tech issue — Plaid's own outage status",
+                body:["“Connectivity Down” is Plaid's own status page for that specific bank, shown when Plaid can't reach the bank at that moment — it's not something broken for the Pro, and not something Tight support can fix.","This usually means a temporary outage affecting new logins to that bank across Plaid, not just this account.","Wait and try again in a day or two before treating it as an issue."]
+            }},
+            { label: "No — different screen or message", next:true }
+          ]
+        },
+        {
+          q: "Does Bank Integrations show “Relink Needed” for this account?",
+          opts: [
+            { label: "Yes", out: {
+                type:"warn", title:"Refer to the Pro — not a tech issue",
+                body:["“Relink Needed” means the Pro's bank login credentials changed. Plaid can't detect a password change on its own.","You don't hold the Pro's bank credentials — this has to go to them. Ask your TL to have the Pro reconnect via Banks & Integrations with their current login."]
+            }},
+            { label: "No", next:true }
+          ]
+        },
+        {
+          q: "Is this a smaller credit union or specific institution that's failing to connect (not a relink)?",
+          opts: [
+            { label: "Yes", out: {
+                type:"warn", title:"Check 3PA before escalating",
+                body:["Some smaller institutions require 3PA (third-party access) authorization before Plaid can connect. If it's missing or lapsed, that's a paperwork/access gap — not a platform failure.","Confirm with your TL whether 3PA has been granted or renewed for this institution."],
+                flag:"Unverified: a similar-looking “credentials not recognized” symptom in 1Password has been tentatively linked to 3PA, but this hasn't been confirmed — ask your TL if this doesn't resolve it."
+            }},
+            { label: "No — different situation", out:{type:"ticket"} }
+          ]
+        }
+      ]
+    },
+
+    importing: {
+      name: "Importing Transactions",
+      desc: "CSV import issues — missing accounts, or uploads that don't show up.",
+      steps: [
+        {
+          q: "Is the account currently disconnected/unlinked, and it's not appearing as an option in the CSV Import dropdown?",
+          opts: [
+            { label: "Yes — that's the situation", out: {
+                type:"good", title:"Not a tech issue — known, settled limitation",
+                body:["CSV Import lists Manually Tracked Accounts, plus — as an HCP-specific feature — currently-linked Plaid accounts. The moment an account is unlinked, it drops out of that dropdown.","Hurdlr's product team has explicitly declined to support importing directly into a disconnected Plaid account (“doesn't align with our product vision”) — this is settled, not an oversight."],
+                list:["Create a Manually Tracked Account","Import the CSV there","Merge the accounts once/if the Plaid connection is restored"]
+            }},
+            { label: "No — the account is connected", next:true }
+          ]
+        },
+        {
+          q: "Did the import already happen, and now those transactions just seem to be missing (rather than the account being missing from the dropdown)?",
+          opts: [
+            { label: "Yes — imported, but can't find them", next:true },
+            { label: "No — it's a different dropdown/selection issue", out:{type:"ticket"} }
+          ]
+        },
+        {
+          q: "Check the year above and below where you expected them — could they have uploaded under the wrong year?",
+          opts: [
+            { label: "Found them under the wrong year", out: {
+                type:"good", title:"Not a tech issue — wrong year selected on upload",
+                quote:"I had a similar issue before and it turned out to be an error in using the year. I used 2026 instead of 2025 and the transactions got uploaded in 2026 so I was not able to see them in 2025 transactions.",
+                source:"a fellow BK",
+                body:["This isn't a delay — waiting longer won't help. The upload worked, it just landed under a different year than intended."],
+                flag:"The correct fix once found (edit the transaction dates vs. delete + re-upload) isn't confirmed yet — check with your TL."
+            }},
+            { label: "Checked adjacent years — still not there", out:{type:"ticket"} }
+          ]
+        }
+      ]
+    },
+
+    merging: {
+      name: "Merging & Duplicate Accounts",
+      desc: "Duplicate GL entries, or a bank account that won't merge.",
+      steps: [
+        {
+          q: "Did you already complete a merge, and now see the old account's GL account still listed in the Chart of Accounts with a zero balance?",
+          opts: [
+            { label: "Yes — that's what's left over", out: {
+                type:"good", title:"Not a tech issue — expected post-merge cleanup",
+                quote:"Merging combines the bank accounts and their transactions, but it doesn't merge or remove the old account's GL account. That GL account stays in the Chart of Accounts with a zero balance. To clean this up, your team can delete the old GL account from the Chart of Accounts.",
+                source:"Tight support",
+                body:["This is expected behavior, not a leftover bug — merging never touches the old GL account on its own.","Your team can go ahead and delete the old, now zero-balance GL account from the Chart of Accounts to clean it up."]
+            }},
+            { label: "No, different situation", next:true }
+          ]
+        },
+        {
+          q: "Was this a manually tracked account that the Pro later connected via Plaid, and now overlapping dates show duplicate transactions?",
+          opts: [
+            { label: "Yes, that's the situation", out: {
+                type:"good", title:"Not a tech issue — fixable without deleting anything one at a time",
+                quote:"Change the start date of the bank connection and that should clear them out naturally. Even if they do get wiped out you can change the date back and it will bring them back in. The key is not deleting the manual ones since that work has already been completed.",
+                source:"Judy Gingerich",
+                body:["Move the bank connection's start date forward, past the point where manual entries already exist — this clears out the newly-synced Plaid duplicates naturally.","This is reversible: if the date change wipes out something you still needed, changing the date back brings it back in.","Never delete the manually-tracked transactions to fix this — that work is already done and shouldn't be redone."]
+            }},
+            { label: "No, different situation", next:true }
+          ]
+        },
+        {
+          q: "Did the Pro recently convert their account type at the bank (e.g. Basic → Business Checking), or was a card/account number reissued?",
+          opts: [
+            { label: "Yes, one of those happened", out: {
+                type:"escalate", title:"This needs Hurdlr support — but you know why",
+                body:["Any relink of a previously disconnected account creates a brand-new Plaid account — it never reconnects to the old one. That's what's producing the duplicate.","This genuinely isn't fixable by a BK alone through the UI, since the old account is no longer selectable to merge. File a ticket, but include which trigger applies — it'll get resolved faster with the cause already identified."]
+            }},
+            { label: "No / not sure", next:true }
+          ]
+        },
+        {
+          q: "Do you have a disconnected Plaid account and a manual account for the same bank that need to be merged — e.g. to reconcile transactions split across both?",
+          opts: [
+            { label: "Yes, that's the situation", out: {
+                type:"good", title:"Not a tech issue — merge direction matters here",
+                body:["Merging is bi-directional, but with a condition: any account — connected or not — can be merged INTO a manual account. The reverse (merging a manual account into a Plaid-connected one) only works if that Plaid connection is currently active.","So don't wait on reconnecting the Plaid side first — merge the disconnected Plaid account into the manual account instead. That direction works regardless of connection status."]
+            }},
+            { label: "No, different situation", next:true }
+          ]
+        },
+        {
+          q: "Are both of the accounts you're trying to merge currently active, Plaid-linked accounts (neither is manual, inactive, or disconnected)?",
+          opts: [
+            { label: "Yes — both are active Plaid accounts", out: {
+                type:"good", title:"Not a tech issue — expected merge restriction",
+                body:["Two active Plaid-linked accounts can never be merged directly — only a manually tracked, inactive, or disconnected account can be merged into an active linked one.","One of the two needs to be fully unlinked/set to inactive first before the merge option appears."]
+            }},
+            { label: "No — different setup", out:{type:"ticket"} }
+          ]
+        }
+      ]
+    },
+
+    reconciliation: {
+      name: "Bank Reconciliation",
+      desc: "Statement balances don't tie out, or recon won't proceed.",
+      steps: [
+        {
+          q: "Does the account not show up at all in the reconciliation space — rather than showing up but not balancing?",
+          opts: [
+            { label: "Yes — it's missing from the reconciliation list entirely", out: {
+                type:"warn", title:"Refer to the Pro — likely a disconnected account, not a tech issue",
+                body:["An account that's disconnected from Plaid will usually not appear in the reconciliation space at all — this is the same underlying issue as disconnected accounts causing missing transactions, just showing up as a different symptom here.","Check Banks & Integrations for “Relink Needed” or disconnected status to confirm.","You don't have the Pro's bank login — this has to go to them. Ask your TL to have the Pro reconnect via Banks & Integrations."],
+                flag:"Confirmed pattern — two separate tickets on the same day traced back to this exact cause."
+            }},
+            { label: "No — it shows up, it just doesn't balance", next:true }
+          ]
+        },
+        {
+          q: "Is a transaction off by exactly one day from what you expect (e.g. showing the 23rd instead of the 24th)?",
+          opts: [
+            { label: "Yes", out: {
+                type:"good", title:"Not a tech issue — statement period boundary",
+                body:["This is a timezone/statement-cutoff artifact, not a bug. Adjusting the date by one day usually resolves the discrepancy."]
+            }},
+            { label: "No", next:true }
+          ]
+        },
+        {
+          q: "Could this reconciliation have been archived previously — by you or another BK?",
+          opts: [
+            { label: "Yes, possible", out: {
+                type:"good", title:"Not a tech issue — check Archived Reconciliations",
+                body:["Archived reconciliations can be restored directly — no escalation needed."]
+            }},
+            { label: "No", next:true }
+          ]
+        },
+        {
+          q: "Do you have complete official bank statements for the full period, or does Plaid's data fall short?",
+          opts: [
+            { label: "Statements are missing or incomplete", out: {
+                type:"warn", title:"Waiting on the Pro — not a tech issue",
+                body:["If Plaid doesn't cover the full period, official bank statements are required to reconcile. This is a WFP (waiting-for-Pro) item, not a platform problem."]
+            }},
+            { label: "Statements are complete", next:true }
+          ]
+        },
+        {
+          q: "Does this bank have both a manual account and a Plaid account existing for it?",
+          opts: [
+            { label: "Yes", out: {
+                type:"good", title:"Not a tech issue — needs a merge",
+                body:["Reconciliation won't balance until the manual and Plaid accounts for this bank are merged. See the Merging & Duplicate Accounts flow."]
+            }},
+            { label: "No — none of this matches", out:{type:"ticket"} }
+          ]
+        }
+      ]
+    },
+
+    dashboard: {
+      name: "Dashboard / Portal Won't Load",
+      desc: "Bookkeeper Dashboard or Admin Portal stuck, blank, or inaccessible.",
+      steps: [
+        {
+          q: "Have you cleared cache AND cookies (as two separate steps), fully restarted the browser, tried incognito, restarted your computer, and tried a different network?",
+          opts: [
+            { label: "Not all of those yet", out: {
+                type:"good", title:"Try the full checklist first",
+                list:["Clear cache and cookies — separately, clearing cache alone often isn't enough","Update the browser fully, then relaunch it","Try an Incognito/Private window","Restart the computer","Try a different network — some home ISPs throttle or block certain page loads"]
+            }},
+            { label: "Yes, tried everything — still broken", next:true }
+          ]
+        },
+        {
+          q: "Is there no Accounting/Bookkeeper Dashboard option in your menu at all — not just a blank loading screen?",
+          opts: [
+            { label: "Yes — it's missing from the menu entirely", out: {
+                type:"warn", title:"Refer to your manager — not a tech issue",
+                body:["This is a permissions gap, not a bug. Your manager needs to submit the Admin Portal access request form — it can't be self-submitted by the person having the issue."]
+            }},
+            { label: "No — I see the option, it just won't load", next:true }
+          ]
+        },
+        {
+          q: "Do you already have Admin Portal permissions confirmed for Bookkeeper Accounting?",
+          opts: [
+            { label: "Yes, confirmed — still won't load", out:{type:"ticket"} },
+            { label: "Not sure", out: {
+                type:"warn", title:"Confirm this first",
+                body:["There's a second, separate cause worth ruling out before a ticket: someone can have full Admin Portal access and still not see the dashboard because their profile was never added as a bookkeeper inside Tight itself.","Check with your TL or the Admin Portal team which of the two applies — a permissions fix and a Tight-profile fix are different actions."]
+            }}
+          ]
+        }
+      ]
+    }
+  };
+
+  var FASTTRACK = {
+    pipe: {
+      name: "Pipe Capital mismatch",
+      body:["This is a known, ongoing engineering issue — please continue filing a tech ticket for every occurrence. Each example helps engineering track down the fix.","You'll be notified in #bookkeeper_chat when a repair is confirmed."]
+    },
+    prd: {
+      name: "PRD / book month activation",
+      body:["Even when the fix is already known, this must still go through a tech ticket — it's tracked for reporting purposes regardless."]
+    }
+  };
+
+  var state = { catKey:null, stepIndex:0, path:[] };
+
+  var catGrid = document.getElementById('catGrid');
+  var landing = document.getElementById('landing');
+  var flowArea = document.getElementById('flowArea');
+
+  function renderLanding(){
+    var html = '';
+    Object.keys(CATS).forEach(function(key){
+      var c = CATS[key];
+      html += '<button type="button" class="cat-card" data-cat="'+key+'">'+
+        '<span class="cat-name">'+c.name+'</span>'+
+        '<span class="cat-desc">'+c.desc+'</span>'+
+        '<span class="cat-meta">'+c.steps.length+' check'+(c.steps.length>1?'s':'')+'</span>'+
+        '</button>';
+    });
+    Object.keys(FASTTRACK).forEach(function(key){
+      var f = FASTTRACK[key];
+      html += '<button type="button" class="cat-card fasttrack" data-fast="'+key+'">'+
+        '<span class="cat-name">'+f.name+'</span>'+
+        '<span class="cat-desc">Known issue — always file a ticket, no troubleshooting needed.</span>'+
+        '<span class="cat-meta">Fast track → ticket</span>'+
+        '</button>';
+    });
+    catGrid.innerHTML = html;
+
+    catGrid.querySelectorAll('[data-cat]').forEach(function(btn){
+      btn.addEventListener('click', function(){ startCategory(btn.getAttribute('data-cat')); });
+    });
+    catGrid.querySelectorAll('[data-fast]').forEach(function(btn){
+      btn.addEventListener('click', function(){ startFastTrack(btn.getAttribute('data-fast')); });
+    });
+  }
+
+  function startCategory(key){
+    state = { catKey:key, stepIndex:0, path:[] };
+    landing.hidden = true;
+    flowArea.hidden = false;
+    renderStep();
+  }
+
+  function startFastTrack(key){
+    var f = FASTTRACK[key];
+    landing.hidden = true;
+    flowArea.hidden = false;
+    flowArea.innerHTML = panelShell(
+      '<div class="cat-title">'+f.name+'</div>'+
+      '<div class="outcome warn">'+
+        '<div class="outcome-label">&#9888; Known issue</div>'+
+        '<h3>Go ahead and file the ticket</h3>'+
+        f.body.map(function(p){return '<p>'+p+'</p>';}).join('')+
+      '</div>'+
+      outcomeActions(true, f.name)
+    , null, null);
+    bindPanelNav(f.name, null);
+  }
+
+  function progressDots(total, currentIndex){
+    var html = '<div class="progress">';
+    for(var i=0;i<total;i++){
+      var cls = 'dot';
+      if(i < currentIndex) cls += ' done';
+      else if(i === currentIndex) cls += ' active';
+      html += '<span class="'+cls+'"></span>';
+    }
+    html += '<span class="step-count">Step '+(currentIndex+1)+' of '+total+'</span></div>';
+    return html;
+  }
+
+  function panelShell(inner, total, currentIndex){
+    var progress = (total!=null) ? progressDots(total, currentIndex) : '<span></span>';
+    return '<div class="panel">'+
+      '<div class="panel-top"><button type="button" class="back-btn" id="backBtn">&larr; All categories</button>'+progress+'</div>'+
+      inner+
+    '</div>';
+  }
+
+  function renderStep(){
+    var cat = CATS[state.catKey];
+    var step = cat.steps[state.stepIndex];
+    var optsHtml = step.opts.map(function(o, i){
+      return '<button type="button" class="opt-btn" data-idx="'+i+'"><span>'+o.label+'</span><span class="opt-arrow">&rarr;</span></button>';
+    }).join('');
+
+    var helperHtml = '';
+    if(step.searchHelper){
+      helperHtml =
+        '<p class="search-helper-hint">'+step.searchHelper.hint+'</p>'+
+        '<div class="search-helper">'+
+          '<input type="text" id="bankSearchInput" placeholder="'+step.searchHelper.placeholder+'" aria-label="Bank name">'+
+          '<button type="button" class="btn btn-primary" id="bankSearchBtn">Search &rarr;</button>'+
+        '</div>';
+    }
+
+    flowArea.innerHTML = panelShell(
+      '<div class="cat-title">'+cat.name+'</div>'+
+      '<p class="question">'+step.q+'</p>'+
+      helperHtml+
+      '<div class="options">'+optsHtml+'</div>'
+    , cat.steps.length, state.stepIndex);
+
+    bindPanelNav(cat.name, null);
+
+    if(step.searchHelper){
+      var searchInput = document.getElementById('bankSearchInput');
+      var searchBtn = document.getElementById('bankSearchBtn');
+      var runSearch = function(){
+        var bank = searchInput.value.trim();
+        if(!bank){ searchInput.focus(); return; }
+        var q = encodeURIComponent(bank + ' ' + step.searchHelper.queryTemplate);
+        window.open('https://www.google.com/search?q='+q, '_blank', 'noopener');
+      };
+      searchBtn.addEventListener('click', runSearch);
+      searchInput.addEventListener('keydown', function(e){
+        if(e.key === 'Enter'){ e.preventDefault(); runSearch(); }
+      });
+    }
+
+    flowArea.querySelectorAll('.opt-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var opt = step.opts[parseInt(btn.getAttribute('data-idx'),10)];
+        state.path.push(step.q + ' → ' + opt.label);
+        if(opt.next){
+          state.stepIndex++;
+          if(state.stepIndex < cat.steps.length){ renderStep(); }
+          else { renderOutcome({type:'ticket'}, cat.name); }
+        } else {
+          renderOutcome(opt.out, cat.name);
+        }
+      });
+    });
+  }
+
+  function outcomeActions(isTicketDest, catName){
+    if(isTicketDest){
+      return '';
+    }
+    return '<div class="outcome-actions">'+
+      '<button type="button" class="btn btn-ghost" id="stillTicketBtn">This didn’t fix it — file a ticket anyway</button>'+
+      '<button type="button" class="btn btn-primary" id="doneBtn">Resolved — back to categories</button>'+
+      '</div>';
+  }
+
+  function renderOutcome(out, catName){
+    var cat = CATS[state.catKey] || null;
+    var total = cat ? cat.steps.length : null;
+    var idx = cat ? state.stepIndex : null;
+
+    if(out.type === 'ticket'){
+      renderTicket(catName);
+      return;
+    }
+
+    var label = out.type === 'good' ? '&#10003; No ticket needed' :
+                out.type === 'warn' ? '&#9888; Refer elsewhere first' :
+                '&#8599; Needs vendor support';
+
+    var body = '<div class="outcome '+out.type+'">'+
+      '<div class="outcome-label">'+label+'</div>'+
+      '<h3>'+out.title+'</h3>';
+    if(out.quote){
+      body += '<div class="quote">“'+out.quote+'”<br>&mdash; '+out.source+'</div>';
+    }
+    if(out.body && out.body.length){
+      body += out.body.map(function(p){return '<p>'+p+'</p>';}).join('');
+    }
+    if(out.list && out.list.length){
+      body += '<ol>'+out.list.map(function(li){return '<li>'+li+'</li>';}).join('')+'</ol>';
+    }
+    if(out.flag){
+      body += '<div class="flag">'+out.flag+'</div>';
+    }
+    body += '</div>' + outcomeActions(false, catName);
+
+    flowArea.innerHTML = panelShell(
+      '<div class="cat-title">'+catName+'</div>' + body
+    , total, idx);
+
+    bindPanelNav(catName, out);
+  }
+
+  function renderTicket(catName){
+    var lines = state.path.length ? state.path.map(function(p){return '- '+p;}).join('\n') : '(fast-tracked, no checks needed)';
+    var descDefault = 'Issue Type: '+catName+'\nChecked before filing:\n'+lines+'\n\nDescribe the issue:\n';
+
+    flowArea.innerHTML = '<div class="panel">'+
+      '<div class="panel-top"><button type="button" class="back-btn" id="backBtn">&larr; All categories</button></div>'+
+      '<div class="ticket-head"><span class="ticket-stub">READY TO FILE</span></div>'+
+      '<h3 style="margin:4px 0 4px;font-size:20px;">Tech ticket — '+catName+'</h3>'+
+      '<p style="color:var(--ink-dim);font-size:14px;margin:0 0 20px;">Nothing here resolved it. Fill in the specifics below, copy the ticket text, then head into the <strong>#inha_mgmt_workflow</strong> Slack channel and run the usual <strong>INHA Technical Issue–Tech Support Ticket</strong> shortcut to file it.</p>'+
+      '<div class="field-row">'+
+        '<div class="field"><label for="proName">Pro Account Name</label><input id="proName" type="text" placeholder="e.g. Acme Home Services"></div>'+
+        '<div class="field"><label for="orgId">Org ID</label><input id="orgId" type="text" placeholder="e.g. 123456"></div>'+
+      '</div>'+
+      '<div class="field"><label for="ticketDesc">Ticket description (pre-filled from your checks)</label><textarea id="ticketDesc">'+descDefault+'</textarea></div>'+
+      '<div class="outcome-actions">'+
+        '<button type="button" class="btn btn-primary" id="copyBtn">Copy ticket text</button>'+
+        '<a class="btn btn-ghost" href="https://housecall.slack.com/archives/C07DP8SUC6P" target="_blank" rel="noopener">Open #inha_mgmt_workflow &rarr;</a>'+
+        '<span class="copy-toast" id="copyToast">Copied</span>'+
+      '</div>'+
+      '<div class="note-box"><strong>This tool doesn’t submit the ticket for you.</strong> Copy the text above, click "Open #inha_mgmt_workflow," run the usual tech-ticket shortcut there, and paste it in — Org ID and Pro name included. (There\'s no direct link into the shortcut itself — Slack doesn\'t support that for this workflow — so this just gets you to the right channel.)</div>'+
+    '</div>';
+
+    document.getElementById('backBtn').addEventListener('click', resetToLanding);
+    document.getElementById('copyBtn').addEventListener('click', function(){
+      var name = document.getElementById('proName').value.trim();
+      var org = document.getElementById('orgId').value.trim();
+      var desc = document.getElementById('ticketDesc').value;
+      var full = 'Pro Account Name:\n'+(name||'(fill in)')+'\n\nOrg ID:\n'+(org||'(fill in)')+'\n\n'+desc;
+      var toast = document.getElementById('copyToast');
+      function showToast(){ toast.classList.add('show'); setTimeout(function(){toast.classList.remove('show');}, 1800); }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(full).then(showToast, function(){
+          try{
+            var ta=document.createElement('textarea'); ta.value=full; document.body.appendChild(ta); ta.select();
+            document.execCommand('copy'); document.body.removeChild(ta); showToast();
+          }catch(e){}
+        });
+      }
+    });
+  }
+
+  function bindPanelNav(catName, out){
+    var back = document.getElementById('backBtn');
+    if(back) back.addEventListener('click', resetToLanding);
+    var still = document.getElementById('stillTicketBtn');
+    if(still) still.addEventListener('click', function(){ renderTicket(catName); });
+    var done = document.getElementById('doneBtn');
+    if(done) done.addEventListener('click', resetToLanding);
+  }
+
+  function resetToLanding(){
+    state = { catKey:null, stepIndex:0, path:[] };
+    flowArea.hidden = true;
+    flowArea.innerHTML = '';
+    landing.hidden = false;
+  }
+
+  renderLanding();
+})();
+</script>
+
+<footer>
+  <span>Sourced from Slack (#accounting_requests, #hurdlr-housecallpro-support, #hcp_help, #bookkeeper_chat) and Judy Gingerich's <a href="https://housecall.atlassian.net/wiki/spaces/INHA/pages/3871081125/Check+Here+First+Troubleshooting+Quick+Reference+Guide+for+BKs+and+TLs" target="_blank" rel="noopener">"Check Here First" SOP</a> &middot; last updated October 2026</span>
+  <span>Tight/Hurdlr changes often — flag anything stale to your TL</span>
+</footer>
+
+</body></html>
